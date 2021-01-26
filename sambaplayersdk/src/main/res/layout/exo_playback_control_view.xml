@@ -79,7 +79,8 @@
                 android:layout_height="match_parent"
                 android:mediaRouteTypes="user"
                 style="@style/Widget.MediaRouter.MediaRouteButton"
-                />
+                android:background="@color/black"
+            />
 
             <ImageButton
                 android:id="@+id/topbar_menu_button"
