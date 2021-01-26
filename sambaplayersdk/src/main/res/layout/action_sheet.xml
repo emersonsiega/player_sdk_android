@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:textSize="16sp"
-        android:textColor="#8C000000"
+        android:textColor="#000000"
         android:background="@android:color/white"
         android:gravity="center_vertical"
         android:text="Qualidade"
@@ -26,6 +26,6 @@
         android:scrollbars="none"
         android:background="@android:color/white"
         android:dividerHeight="1dp"
-        android:divider="#0D000000"/>
+        android:divider="#000000"/>
 
 </LinearLayout>
