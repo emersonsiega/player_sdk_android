@@ -73,6 +73,20 @@ import static android.content.ContentValues.TAG;
  */
 public class SambaPlayer extends FrameLayout {
 
+    Activity flutterActivity;
+
+    public void setFlutterActivity(Activity flutterActivity) {
+        this.flutterActivity = flutterActivity;
+    }
+
+    protected Activity getActivity() {
+        if (flutterActivity != null) {
+            return flutterActivity;
+        }
+
+        return ((Activity) getContext());
+    }
+
     private final Player.DefaultEventListener playerEventListener = new Player.DefaultEventListener() {
 
         @Override
@@ -150,7 +164,7 @@ public class SambaPlayer extends FrameLayout {
                     errorTimer.scheduleAtFixedRate(new TimerTask() {
                         @Override
                         public void run() {
-                            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     // on buffer timeout disable ABR (sets to lower)
@@ -231,7 +245,7 @@ public class SambaPlayer extends FrameLayout {
                         @Override
                         public void onSuccess(String response) {
                             // check whether it can fallback (changes error criticity) or fail otherwise
-                            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (_currentBackupIndex < media.backupUrls.length) {
@@ -272,7 +286,7 @@ public class SambaPlayer extends FrameLayout {
                 errorTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                        ((Activity) getContext()).runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if (secs.get() == 0) {
@@ -858,6 +872,7 @@ public class SambaPlayer extends FrameLayout {
 
         playerInstanceDefault = new PlayerInstanceDefault(getContext(), media);
         simplePlayerView = new SambaSimplePlayerView(getContext(), this);
+        simplePlayerView.setFlutterActivity(flutterActivity);
         player = playerInstanceDefault.createPlayerInstance();
         simplePlayerView.setPlayer(player);
         simplePlayerView.setVideoTitle(media.title);
@@ -1035,7 +1050,7 @@ public class SambaPlayer extends FrameLayout {
 
     private void showError(@NonNull SambaPlayerError error) {
         if (errorScreen == null)
-            errorScreen = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.error_screen, this, false);
+            errorScreen = getActivity().getLayoutInflater().inflate(R.layout.error_screen, this, false);
 
         TextView textView = (TextView) errorScreen.findViewById(R.id.error_message);
         textView.setText(error.toString());
@@ -1085,7 +1100,7 @@ public class SambaPlayer extends FrameLayout {
         progressTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                ((Activity) getContext()).runOnUiThread(progressDispatcher);
+                getActivity().runOnUiThread(progressDispatcher);
             }
         }, 0, 250);
     }

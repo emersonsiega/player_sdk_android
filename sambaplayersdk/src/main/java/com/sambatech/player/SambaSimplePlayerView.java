@@ -66,6 +66,20 @@ import static android.view.accessibility.CaptioningManager.CaptionStyle.EDGE_TYP
 
 public class SambaSimplePlayerView implements View.OnClickListener {
 
+    Activity flutterActivity;
+
+    public void setFlutterActivity(Activity flutterActivity) {
+        this.flutterActivity = flutterActivity;
+    }
+
+    protected Activity getActivity() {
+        if (flutterActivity != null) {
+            return flutterActivity;
+        }
+
+        return ((Activity) context);
+    }
+
     private Context context;
     private FrameLayout playerContainer;
     private SimpleExoPlayer player;
@@ -289,7 +303,7 @@ public class SambaSimplePlayerView implements View.OnClickListener {
                 playerView.showController();
             }
             if (isFullscreen) {
-                ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(mFullScreenFlags);
+                getActivity().getWindow().getDecorView().setSystemUiVisibility(mFullScreenFlags);
             }
         }
     };
@@ -368,7 +382,7 @@ public class SambaSimplePlayerView implements View.OnClickListener {
 
     private void initCaptionMenu(final PlayerMediaSourceInterface playerMediaSource, Format currentCaption) {
         final TrackGroupArray captions = playerMediaSource.getSubtitles();
-        captionSheetView = ((Activity) context).getLayoutInflater().inflate(R.layout.action_sheet, null);
+        captionSheetView = getActivity().getLayoutInflater().inflate(R.layout.action_sheet, null);
         TextView title = captionSheetView.findViewById(R.id.action_sheet_title);
         title.setText(context.getString(R.string.captions));
         final ListView menuList = captionSheetView.findViewById(R.id.sheet_list);
@@ -399,7 +413,7 @@ public class SambaSimplePlayerView implements View.OnClickListener {
 
     private void initOutputMenu(final PlayerMediaSourceInterface playerMediaSource, Format currentOutput, boolean isAbrEnabled) {
         final TrackGroup outputs = playerMediaSource.getVideoOutputsTracks();
-        outputSheetView = ((Activity) context).getLayoutInflater().inflate(R.layout.action_sheet, null);
+        outputSheetView = getActivity().getLayoutInflater().inflate(R.layout.action_sheet, null);
         TextView title = outputSheetView.findViewById(R.id.action_sheet_title);
         title.setText(context.getString(R.string.output));
         final ListView menuList = outputSheetView.findViewById(R.id.sheet_list);
@@ -425,7 +439,7 @@ public class SambaSimplePlayerView implements View.OnClickListener {
     }
 
     private void initSpeedMenu() {
-        speedSheetView = ((Activity) context).getLayoutInflater().inflate(R.layout.action_sheet, null);
+        speedSheetView = getActivity().getLayoutInflater().inflate(R.layout.action_sheet, null);
         TextView title = speedSheetView.findViewById(R.id.action_sheet_title);
         title.setText(context.getString(R.string.speed));
         final ListView menuList = speedSheetView.findViewById(R.id.sheet_list);
@@ -475,7 +489,7 @@ public class SambaSimplePlayerView implements View.OnClickListener {
                     playerView.showController();
                 }
                 if (isFullscreen) {
-                    ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(mFullScreenFlags);
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(mFullScreenFlags);
                 }
             }
         });
@@ -558,7 +572,7 @@ public class SambaSimplePlayerView implements View.OnClickListener {
     public void setFullscreen(boolean newValue, boolean isReverseLandscape) {
         if (this.isFullscreen == newValue && this.isReverseLandscape == isReverseLandscape) return;
         if (fullscreenCallback == null) return;
-        final Activity activity = (Activity) context;
+        final Activity activity = getActivity();
         if (newValue == false) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
