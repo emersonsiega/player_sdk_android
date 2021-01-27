@@ -514,6 +514,7 @@ public class SambaPlayer extends FrameLayout {
     private PlayerInstanceDefault playerInstanceDefault;
     private PlayerMediaSourceInterface playerMediaSourceInterface;
     //private boolean wasPlaying;
+    private Surface videoSurface;
 
     CastPlayer castPlayer;
 
@@ -523,7 +524,7 @@ public class SambaPlayer extends FrameLayout {
     }
 
     public void setVideoSurface(Surface surface) {
-        simplePlayerView.setVideoSurface(surface);
+        this.videoSurface = surface;
     }
 
     /**
@@ -879,6 +880,7 @@ public class SambaPlayer extends FrameLayout {
         simplePlayerView = new SambaSimplePlayerView(getContext(), this);
         simplePlayerView.setFlutterActivity(flutterActivity);
         player = playerInstanceDefault.createPlayerInstance();
+        player.setVideoSurface(this.videoSurface);
         simplePlayerView.setPlayer(player);
         simplePlayerView.setVideoTitle(media.title);
         simplePlayerView.configureSubTitle(media.captionsConfig);

@@ -158,9 +158,6 @@ public class SambaSimplePlayerView implements View.OnClickListener {
      */
     private boolean menuWasPlaying;
 
-    public void setVideoSurface(Surface surface) {
-        player.setVideoSurface(surface);
-    }
 
     /**
      * Play or pause for another buttons.
