@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -519,6 +520,10 @@ public class SambaPlayer extends FrameLayout {
     public SambaPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         applyAttributes(getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.SambaPlayer, 0, 0));
+    }
+
+    public void setVideoSurface(Surface surface) {
+        simplePlayerView.setVideoSurface(surface);
     }
 
     /**

@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.MediaRouteButton;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -156,6 +157,10 @@ public class SambaSimplePlayerView implements View.OnClickListener {
      * Indicates playback last state before the output menu has open.
      */
     private boolean menuWasPlaying;
+
+    public void setVideoSurface(Surface surface) {
+        player.setVideoSurface(surface);
+    }
 
     /**
      * Play or pause for another buttons.
