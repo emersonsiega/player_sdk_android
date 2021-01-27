@@ -527,6 +527,10 @@ public class SambaPlayer extends FrameLayout {
         this.videoSurface = surface;
     }
 
+    public SimpleExoPlayer getPlayer() {
+        return this.player;
+    }
+
     /**
      * Defines/overwrites current media.
      *
