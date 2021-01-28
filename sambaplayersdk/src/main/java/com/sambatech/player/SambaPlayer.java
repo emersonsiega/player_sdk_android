@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -53,6 +54,8 @@ import com.sambatech.player.plugins.PluginManager;
 import com.sambatech.player.utils.CastLiveButtonListener;
 import com.sambatech.player.utils.Helpers;
 import com.sambatech.player.utils.Orientation;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -515,6 +518,7 @@ public class SambaPlayer extends FrameLayout {
     private PlayerMediaSourceInterface playerMediaSourceInterface;
     //private boolean wasPlaying;
     private Surface videoSurface;
+    private TextureView textureView;
 
     CastPlayer castPlayer;
 
@@ -525,6 +529,10 @@ public class SambaPlayer extends FrameLayout {
 
     public void setVideoSurface(Surface surface) {
         this.videoSurface = surface;
+    }
+
+    public void setVideoTextureView(TextureView textureView) {
+        this.textureView = textureView;
     }
 
     public SimpleExoPlayer getPlayer() {
@@ -887,7 +895,11 @@ public class SambaPlayer extends FrameLayout {
 //        simplePlayerView = new SambaSimplePlayerView(getContext(), this);
 //        simplePlayerView.setFlutterActivity(flutterActivity);
         player = playerInstanceDefault.createPlayerInstance();
-        player.setVideoSurface(this.videoSurface);
+        if(this.videoSurface != null) {
+            player.setVideoSurface(this.videoSurface);
+        } else {
+            player.setVideoTextureView(this.textureView);
+        }
 //        simplePlayerView.setPlayer(player);
 //        simplePlayerView.setVideoTitle(media.title);
 //        simplePlayerView.configureSubTitle(media.captionsConfig);
