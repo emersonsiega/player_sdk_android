@@ -8,8 +8,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import com.google.android.exoplayer2.source.BehindLiveWindowException;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaQueueItem;
@@ -519,6 +523,8 @@ public class SambaPlayer extends FrameLayout {
     //private boolean wasPlaying;
     private Surface videoSurface;
     private TextureView textureView;
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
 
     CastPlayer castPlayer;
 
@@ -534,6 +540,15 @@ public class SambaPlayer extends FrameLayout {
     public void setVideoTextureView(TextureView textureView) {
         this.textureView = textureView;
     }
+
+    public void setVideoSurfaceView(SurfaceView surfaceView) {
+        this.surfaceView = surfaceView;
+    }
+
+    public void setVideoSurfaceHolder(SurfaceHolder holder) {
+        this.surfaceHolder = holder;
+    }
+
 
     public SimpleExoPlayer getPlayer() {
         return this.player;
@@ -895,11 +910,19 @@ public class SambaPlayer extends FrameLayout {
 //        simplePlayerView = new SambaSimplePlayerView(getContext(), this);
 //        simplePlayerView.setFlutterActivity(flutterActivity);
         player = playerInstanceDefault.createPlayerInstance();
-        if(this.videoSurface != null) {
-            player.setVideoSurface(this.videoSurface);
-        } else {
-            player.setVideoTextureView(this.textureView);
-        }
+
+        player.setVideoSurface(this.videoSurface);
+        player.setVideoTextureView(this.textureView);
+        player.setVideoSurfaceView(this.surfaceView);
+        player.setVideoSurfaceHolder(this.surfaceHolder);
+
+        PlayerView playerView = new PlayerView(getContext());
+        playerView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        playerView.setPlayer(player);
+        playerView.getSubtitleView().setBackgroundColor(0xFFFFFFFF);
+
 //        simplePlayerView.setPlayer(player);
 //        simplePlayerView.setVideoTitle(media.title);
 //        simplePlayerView.configureSubTitle(media.captionsConfig);
