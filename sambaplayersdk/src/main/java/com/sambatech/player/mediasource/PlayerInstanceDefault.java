@@ -110,6 +110,7 @@ public class PlayerInstanceDefault {
     }
 
     public SimpleExoPlayer createPlayerInstance() {
+//        return ExoPlayerFactory.newSimpleInstance(context, null, trackSelector, drmSessionManager);
         return ExoPlayerFactory.newSimpleInstance(this.context, renderersFactory, trackSelector, drmSessionManager);
     }
 
