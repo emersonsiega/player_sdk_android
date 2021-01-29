@@ -921,7 +921,7 @@ public class SambaPlayer extends FrameLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         playerView.setPlayer(player);
-        playerView.getSubtitleView().setBackgroundColor(0xFFFFFFFF);
+//        playerView.getSubtitleView().setBackgroundColor(0xFFFFFFFF);
 
 //        simplePlayerView.setPlayer(player);
 //        simplePlayerView.setVideoTitle(media.title);

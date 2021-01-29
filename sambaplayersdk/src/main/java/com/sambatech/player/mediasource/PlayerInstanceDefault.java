@@ -5,8 +5,10 @@ import android.os.Handler;
 import android.util.Base64;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.drm.DefaultDrmSessionManager;
 import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
@@ -17,6 +19,7 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
@@ -109,9 +112,21 @@ public class PlayerInstanceDefault {
         return drmSessionManager;
     }
 
+    
+
     public SimpleExoPlayer createPlayerInstance() {
+
+           LoadControl loadControl = new DefaultLoadControl.Builder()
+              .setAllocator(new DefaultAllocator(true, 16))
+              .setBufferDurationsMs(Config.MIN_BUFFER_DURATION,
+                      Config.MAX_BUFFER_DURATION,
+                      Config.MIN_PLAYBACK_START_BUFFER,
+                      Config.MIN_PLAYBACK_RESUME_BUFFER)
+              .setTargetBufferBytes(-1)
+              .setPrioritizeTimeOverSizeThresholds(true).createDefaultLoadControl();
+
 //        return ExoPlayerFactory.newSimpleInstance(context, null, trackSelector, drmSessionManager);
-        return ExoPlayerFactory.newSimpleInstance(this.context, renderersFactory, trackSelector, drmSessionManager);
+        return ExoPlayerFactory.newSimpleInstance(this.context, renderersFactory, trackSelector, loadControl, drmSessionManager);
     }
 
     public void destroy() {
