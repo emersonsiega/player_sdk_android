@@ -79,9 +79,15 @@ import static android.content.ContentValues.TAG;
  *
  * @author Leandro Zanol - 7/12/15
  */
-public class SambaPlayer extends FrameLayout {
+public class SambaPlayer /*extends FrameLayout*/ {
 
     Activity flutterActivity;
+
+    Context context;
+
+    public void setContext(Context ctx) {
+        this.context = ctx;
+    }
 
     public void setFlutterActivity(Activity flutterActivity) {
         this.flutterActivity = flutterActivity;
@@ -92,7 +98,7 @@ public class SambaPlayer extends FrameLayout {
             return flutterActivity;
         }
 
-        return ((Activity) getContext());
+        return ((Activity) context);
     }
 
     private final Player.DefaultEventListener playerEventListener = new Player.DefaultEventListener() {
@@ -199,18 +205,18 @@ public class SambaPlayer extends FrameLayout {
             final boolean isBehindLiveWindowException = error instanceof BehindLiveWindowException;
 
 
-            for (StackTraceElement element : e.getCause().getStackTrace()) {
-                if (element.toString().contains("MediaCodecRenderer.feedInputBuffer") || element.toString().contains("native_dequeueOutputBuffer")) {
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            destroyInternal();
-                            create(false);
-                        }
-                    }, 1000);
-                    return;
-                }
-            }
+//            for (StackTraceElement element : e.getCause().getStackTrace()) {
+//                if (element.toString().contains("MediaCodecRenderer.feedInputBuffer") || element.toString().contains("native_dequeueOutputBuffer")) {
+//                    postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            destroyInternal();
+//                            create(false);
+//                        }
+//                    }, 1000);
+//                    return;
+//                }
+//            }
 
             if (_initialTime == 0f)
                 _initialTime = getCurrentTime();
@@ -238,7 +244,7 @@ public class SambaPlayer extends FrameLayout {
                 create(false);
             }
             // URL not found
-            else if (Helpers.isNetworkAvailable(getContext())) {
+            else if (Helpers.isNetworkAvailable(context)) {
                 msg = "Conectando...";
                 severity = SambaPlayerError.Severity.info;
 
@@ -422,7 +428,7 @@ public class SambaPlayer extends FrameLayout {
             mediaQueueItems[0] = new MediaQueueItem.Builder(mediaInfo).build();
 
 
-            String tempMediaCasting = SambaCast.currentMediaCastingId(getContext());
+            String tempMediaCasting = SambaCast.currentMediaCastingId(context);
 
 
             if (tempMediaCasting == null || !tempMediaCasting.equals(media.id)) {
@@ -430,7 +436,7 @@ public class SambaPlayer extends FrameLayout {
                 result.setResultCallback(new ResultCallback<RemoteMediaClient.MediaChannelResult>() {
                     @Override
                     public void onResult(@NonNull RemoteMediaClient.MediaChannelResult mediaChannelResult) {
-                        SambaCast.setCurrentMediaCastingId(getContext(), media.id);
+                        SambaCast.setCurrentMediaCastingId(context, media.id);
                         castPlayer.setPlayWhenReady(true);
                     }
                 }, 5, TimeUnit.SECONDS);
@@ -466,7 +472,7 @@ public class SambaPlayer extends FrameLayout {
 
         @Override
         public void onDisconnected() {
-            SambaCast.cleanCacheDatas(getContext());
+            SambaCast.cleanCacheDatas(context);
             SambaEventBus.post(new SambaEvent(SambaPlayerListener.EventType.CAST_DISCONNECT));
             long lastPosition = castPlayer.getContentPosition();
 
@@ -529,8 +535,9 @@ public class SambaPlayer extends FrameLayout {
     CastPlayer castPlayer;
 
     public SambaPlayer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        applyAttributes(getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.SambaPlayer, 0, 0));
+//        super(context, attrs);
+        this.context = context;
+        //applyAttributes(getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.SambaPlayer, 0, 0));
     }
 
     public void setVideoSurface(Surface surface) {
@@ -880,8 +887,8 @@ public class SambaPlayer extends FrameLayout {
 
     private void applyAttributes(TypedArray attrs) {
         try {
-            setAutoFullscreenMode(attrs.getBoolean(R.styleable.SambaPlayer_autoFullscreenMode, false));
-            setControlsVisibility(attrs.getBoolean(R.styleable.SambaPlayer_enableControls, true));
+//            setAutoFullscreenMode(attrs.getBoolean(R.styleable.SambaPlayer_autoFullscreenMode, false));
+//            setControlsVisibility(attrs.getBoolean(R.styleable.SambaPlayer_enableControls, true));
         } finally {
             attrs.recycle();
         }
@@ -906,14 +913,14 @@ public class SambaPlayer extends FrameLayout {
             return;
         }
 
-        playerInstanceDefault = new PlayerInstanceDefault(getContext(), media);
+        playerInstanceDefault = new PlayerInstanceDefault(context, media);
 //        simplePlayerView = new SambaSimplePlayerView(getContext(), this);
 //        simplePlayerView.setFlutterActivity(flutterActivity);
         player = playerInstanceDefault.createPlayerInstance();
 
       
 
-        PlayerView playerView = new PlayerView(getContext());
+        PlayerView playerView = new PlayerView(context);
         playerView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -1001,7 +1008,7 @@ public class SambaPlayer extends FrameLayout {
                 sambaCast.setEventListener(null);
                 sambaCast.stopCasting();
             } else {
-                SambaCast.cleanCacheDatas(getContext());
+                SambaCast.cleanCacheDatas(context);
             }
         } else {
             setupCast();
@@ -1011,7 +1018,7 @@ public class SambaPlayer extends FrameLayout {
             if (sambaCast != null && sambaCast.isCasting()) {
                 castListener.onConnected(sambaCast.getCastSession());
             } else {
-                SambaCast.cleanCacheDatas(getContext());
+                SambaCast.cleanCacheDatas(context);
             }
 
         }
@@ -1021,7 +1028,7 @@ public class SambaPlayer extends FrameLayout {
 
 
     private void createOrientationEventListener() {
-        orientationEventListener = new OrientationEventListener(getContext()) {
+        orientationEventListener = new OrientationEventListener(context) {
 
             private final Orientation orientation = new Orientation();
             private int lastRotatedTo = 0;
@@ -1100,36 +1107,37 @@ public class SambaPlayer extends FrameLayout {
     }
 
     private void showError(@NonNull SambaPlayerError error) {
-        if (errorScreen == null)
-            errorScreen = getActivity().getLayoutInflater().inflate(R.layout.error_screen, this, false);
+        System.out.println("DEU ERRO!!!!!!! " + error.getMessage());
+//        if (errorScreen == null)
+//            errorScreen = getActivity().getLayoutInflater().inflate(R.layout.error_screen, this, false);
+//
+//        TextView textView = (TextView) errorScreen.findViewById(R.id.error_message);
+//        textView.setText(error.toString());
+//
+//        ImageButton retryButton = (ImageButton) errorScreen.findViewById(R.id.retry_button);
+//        retryButton.setVisibility(error.getSeverity() == SambaPlayerError.Severity.recoverable ? VISIBLE : GONE);
+//        retryButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                destroyInternal();
+//                create(false);
+//            }
+//        });
 
-        TextView textView = (TextView) errorScreen.findViewById(R.id.error_message);
-        textView.setText(error.toString());
+//        if (media.isAudioOnly)
+//            // shows retry button when recoverable error
+//            if (error.getSeverity() == SambaPlayerError.Severity.recoverable)
+////                textView.setVisibility(GONE);
+//            else textView.setCompoundDrawables(null, null, null, null);
+//            // set custom image
+////        else if (error.getDrawableRes() > 0)
+////            textView.setCompoundDrawablesWithIntrinsicBounds(0, error.getDrawableRes(), 0, 0);
+//            // default error image
+//        else
+//            textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.sambaplayer_error_icon, 0, 0);
 
-        ImageButton retryButton = (ImageButton) errorScreen.findViewById(R.id.retry_button);
-        retryButton.setVisibility(error.getSeverity() == SambaPlayerError.Severity.recoverable ? VISIBLE : GONE);
-        retryButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                destroyInternal();
-                create(false);
-            }
-        });
-
-        if (media.isAudioOnly)
-            // shows retry button when recoverable error
-            if (error.getSeverity() == SambaPlayerError.Severity.recoverable)
-                textView.setVisibility(GONE);
-            else textView.setCompoundDrawables(null, null, null, null);
-            // set custom image
-        else if (error.getDrawableRes() > 0)
-            textView.setCompoundDrawablesWithIntrinsicBounds(0, error.getDrawableRes(), 0, 0);
-            // default error image
-        else
-            textView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.sambaplayer_error_icon, 0, 0);
-
-        if (errorScreen.getParent() == null)
-            addView(errorScreen);
+//        if (errorScreen.getParent() == null)
+//            addView(errorScreen);
     }
 
     private void destroyError() {
@@ -1139,7 +1147,7 @@ public class SambaPlayer extends FrameLayout {
             return;
 
         errorScreen.findViewById(R.id.retry_button).setOnClickListener(null);
-        removeView(errorScreen);
+//        removeView(errorScreen);
         errorScreen = null;
     }
 
@@ -1201,6 +1209,6 @@ public class SambaPlayer extends FrameLayout {
     private void setupCast() {
         if (sambaCast == null || media.isAudioOnly) return;
         sambaCast.setEventListener(castListener);
-        castPlayer = new CastPlayer(getContext(), sambaCast);
+        castPlayer = new CastPlayer(context, sambaCast);
     }
 }
