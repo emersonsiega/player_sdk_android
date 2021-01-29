@@ -85,6 +85,10 @@ public class SambaPlayer /*extends FrameLayout*/ {
 
     Context context;
 
+    public Context getContext() {
+        return context;
+    }
+
     public void setContext(Context ctx) {
         this.context = ctx;
     }
