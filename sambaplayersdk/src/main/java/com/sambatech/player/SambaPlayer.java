@@ -911,17 +911,18 @@ public class SambaPlayer extends FrameLayout {
 //        simplePlayerView.setFlutterActivity(flutterActivity);
         player = playerInstanceDefault.createPlayerInstance();
 
-        player.setVideoSurface(this.videoSurface);
-        player.setVideoTextureView(this.textureView);
-        player.setVideoSurfaceView(this.surfaceView);
-        player.setVideoSurfaceHolder(this.surfaceHolder);
+      
 
         PlayerView playerView = new PlayerView(getContext());
         playerView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         playerView.setPlayer(player);
-//        playerView.getSubtitleView().setBackgroundColor(0xFFFFFFFF);
+
+        player.setVideoSurface(this.videoSurface);
+        player.setVideoTextureView(this.textureView);
+        player.setVideoSurfaceView(this.surfaceView);
+        player.setVideoSurfaceHolder(this.surfaceHolder);
 
 //        simplePlayerView.setPlayer(player);
 //        simplePlayerView.setVideoTitle(media.title);
@@ -952,16 +953,17 @@ public class SambaPlayer extends FrameLayout {
         player.addListener(playerEventListener);
 
         player.setPlayWhenReady(true);
-        if ((media.captions != null && !media.captions.isEmpty()) && (!media.isOffline || media.isSubtitlesOffline)) {
-            playerMediaSourceInterface.addSubtitles(media.captions);
-        }
+        // if ((media.captions != null && !media.captions.isEmpty()) && (!media.isOffline || media.isSubtitlesOffline)) {
+        //     playerMediaSourceInterface.addSubtitles(media.captions);
+        // }
 
 //        if (media.adUrl != null) {
 //            playerMediaSourceInterface.addAds(media.adUrl, simplePlayerView.getPlayerView().getOverlayFrameLayout());
 //        }
 
         player.prepare(playerMediaSourceInterface.getMediaSource());
-        player.setRepeatMode(Player.REPEAT_MODE_OFF);
+        player.getPlaybackState();
+        // player.setRepeatMode(Player.REPEAT_MODE_OFF);
 
 //        simplePlayerView.setThemeColor(media.themeColor);
 
